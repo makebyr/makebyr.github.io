@@ -4,8 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Makebyr - Plataforma Digital y Proyectos Web</title>
-  <link rel="icon" href="favicon.jpg" type="image/jpeg">
-	
+  <link rel="icon" type="image/jpeg" href="favicon.jpg">
+  <!-- Titulu de la pagina web:Makebyr:Descrision:Pagina web de nuestra communidad Que esperas para unirte incia seccion y habla por correo de Makebyr Y apoya a nuestra marca -->
+  
   <style>
     /* =========================================
        VARIABLES Y RESET
@@ -706,13 +707,66 @@
     
     function openAddContentModal() { document.getElementById('modal-admin-add').style.display = 'flex'; }
     function closeAddContentModal() { document.getElementById('modal-admin-add').style.display = 'none'; }
+	
+	const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1553827320270299239/P85N2y7rkzkii3XNyVpSZtiB15KBByInfCt1ekH_YEQhVpwnL5eVeh3wRnWIs2gXfBpd";
+
+function saveContent() {
+  const cat = document.getElementById('admin-category').value;
+  const t = document.getElementById('admin-title').value;
+  const d = document.getElementById('admin-desc').value;
+  const l = document.getElementById('admin-link').value;
+
+  if (!t || !d) return alert('Por favor completa el título y la descripción.');
+
+  // 1. Guardar en Firebase
+  db.ref('makebyr_items').push({ 
+    category: cat, 
+    title: t, 
+    desc: d, 
+    link: l || '#', 
+    time: firebase.database.ServerValue.TIMESTAMP 
+  })
+  .then(() => {
     
-    function saveContent() {
-      const cat = document.getElementById('admin-category').value, t = document.getElementById('admin-title').value;
-      const d = document.getElementById('admin-desc').value, l = document.getElementById('admin-link').value;
-      db.ref('makebyr_items').push({ category: cat, title: t, desc: d, link: l||'#', time: firebase.database.ServerValue.TIMESTAMP })
-        .then(() => { closeAddContentModal(); alert('Publicado'); });
+    // 2. Enviar a Discord (sin condiciones raras, directo al webhook)
+    if (DISCORD_WEBHOOK_URL) {
+      fetch(DISCORD_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content: "📢 **¡Nuevo anuncio en Makebyr!**",
+          embeds: [{
+            title: t,
+            description: d,
+            color: 3066993, // Azul Makebyr
+            fields: [
+              { name: "Categoría", value: cat.toUpperCase(), inline: true },
+              { name: "Enlace", value: l ? `[Hacer clic aquí](${l})` : "Sin enlace disponible", inline: true }
+            ],
+            footer: { text: "Makebyr Digital Brand" },
+            timestamp: new Date().toISOString()
+          }]
+        })
+      })
+      .then(response => {
+        if (!response.ok) {
+          console.error("Error de Discord:", response.statusText);
+        } else {
+          console.log("¡Mensaje enviado a Discord!");
+        }
+      })
+      .catch(err => console.error("Error de conexión con Discord:", err));
     }
+
+    // 3. Cerrar modal y avisar al usuario
+    closeAddContentModal();
+    alert('Publicado en la web y anunciado en Discord con éxito');
+  })
+  .catch(error => {
+    console.error("Error al guardar en Firebase:", error);
+    alert("Hubo un error al guardar la publicación.");
+  });
+}
     
     function deleteItem(id) { if(confirm('¿Eliminar?')) db.ref('makebyr_items/'+id).remove(); }
 
