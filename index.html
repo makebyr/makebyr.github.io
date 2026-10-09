@@ -1,824 +1,608 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Makebyr - Plataforma Digital y Proyectos Web</title>
-  <link rel="icon" type="image/jpeg" href="favicon.jpg">
-  <!-- Titulu de la pagina web:Makebyr:Descrision:Pagina web de nuestra communidad Que esperas para unirte incia seccion y habla por correo de Makebyr Y apoya a nuestra marca -->
-  <meta name="site_name" content="Makebyr">
-
-    <!-- 2. DESCRIPCIÓN (El texto que explica de qué trata la marca) -->
-  <meta name="description" content="Bienvenido a Makebyr Digital. Tu cuenta única para explorar aplicaciones web, juegos, herramientas y conectar con otras plataformas.">
-  <meta name="google-site-verification" content="n-2ujNN_qYOwG7z54y6w7WqFLEu4oqhM_zg8PWOnctk" />
-	
-  <style>
-    /* =========================================
-       VARIABLES Y RESET
-    ========================================= */
-    :root {
-      --primary: #0078d4; --primary-hover: #106ebe; --bg-color: #f3f2f1;
-      --card-bg: #ffffff; --text-color: #201f1e; --border-color: #e1dfdd;
-      --header-bg: #ffffff; --accent-admin: #d13438;
-      --gmake-sidebar: #f2f6fc; --gmake-hover: #f4f7fd; --gmake-unread: #ffffff;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-    body { background-color: var(--bg-color); color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
-    
-    /* =========================================
-       PANTALLA DE CARGA (LETRAS CAYENDO)
-    ========================================= */
-    #loader {
-      position: fixed; inset: 0; background: var(--header-bg); z-index: 99999;
-      display: flex; justify-content: center; align-items: center;
-      transition: opacity 0.5s ease-out;
-    }
-    .falling-text {
-      font-size: 4rem; font-weight: 800; display: flex; gap: 5px; color: var(--primary);
-    }
-    .letter {
-      display: inline-block; opacity: 0;
-      transform: translateY(-100vh) rotate(-20deg);
-      animation: fallDrop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    }
-    .letter.m { animation-delay: 0.1s; } .letter.a { animation-delay: 0.2s; }
-    .letter.k { animation-delay: 0.3s; } .letter.e { animation-delay: 0.4s; }
-    .letter.b { animation-delay: 0.5s; } .letter.y { animation-delay: 0.6s; }
-    .letter.r { animation-delay: 0.7s; }
-    
-    @keyframes fallDrop {
-      0% { transform: translateY(-100vh) rotate(-20deg); opacity: 0; }
-      100% { transform: translateY(0) rotate(0deg); opacity: 1; }
-    }
-
-    /* =========================================
-       NAVEGACIÓN Y DISEÑO PRINCIPAL
-    ========================================= */
-    header { background-color: var(--header-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-    .nav-container { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; height: 60px; }
-    .brand-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.2rem; color: var(--primary); text-decoration: none; }
-    .brand-logo img { width: 28px; height: 28px; }
-    nav { display: flex; gap: 10px; }
-    nav button { background: none; border: none; font-size: 0.95rem; color: var(--text-color); cursor: pointer; padding: 8px 12px; border-radius: 4px; transition: background 0.2s; }
-    nav button:hover, nav button.active { background-color: #edebe9; color: var(--primary); }
-    .user-actions { display: flex; align-items: center; gap: 10px; }
-    
-    .btn-primary { background-color: var(--primary); color: #fff; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: 600; }
-    .btn-primary:hover { background-color: var(--primary-hover); }
-    .btn-danger { background-color: var(--accent-admin); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
-    .btn-success { background-color: #107c10; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: 600; }
-    
-    main { max-width: 1400px; width: 100%; margin: 20px auto; padding: 0 20px; flex: 1; display: flex; flex-direction: column; }
-    .hero-banner { background: linear-gradient(135deg, #0078d4 0%, #00b7c3 100%); color: white; padding: 40px; border-radius: 8px; margin-bottom: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-    .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 6px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; }
-    .card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
-    .card-tag { display: inline-block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--primary); margin-bottom: 8px; }
-    
-    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(3px); }
-    .modal-content { background: white; padding: 30px; border-radius: 8px; width: 100%; max-width: 450px; position: relative; }
-    .form-group { margin-bottom: 15px; position: relative; }
-    .form-group label { display: block; font-size: 0.85rem; margin-bottom: 5px; font-weight: 600; }
-    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; }
-    .email-input-wrapper { display: flex; align-items: center; }
-    .email-input-wrapper input { border-top-right-radius: 0; border-bottom-right-radius: 0; }
-    .email-domain-tag { background: #e1dfdd; padding: 10px 12px; border: 1px solid var(--border-color); border-left: none; border-radius: 0 4px 4px 0; font-weight: 600; }
-    .close-modal { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 1.2rem; cursor: pointer; }
-    .admin-bar { background-color: #fff4ce; border: 1px solid #fce100; padding: 10px 20px; border-radius: 4px; margin-bottom: 20px; display: flex; justify-content: space-between; }
-    
-    /* =========================================
-       GMAKE MAIL - ESTILO GMAIL AVANZADO
-    ========================================= */
-    .gmake-container { display: flex; background: white; border: 1px solid var(--border-color); border-radius: 8px; height: 75vh; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-    
-    /* Sidebar Gmake */
-    .gmake-sidebar { width: 240px; background: var(--gmake-sidebar); padding: 15px 10px; display: flex; flex-direction: column; overflow-y: auto; }
-    .gmake-compose-btn { background: #c2e7ff; color: #001d35; border: none; padding: 15px 20px; border-radius: 16px; font-weight: 600; font-size: 1rem; cursor: pointer; margin-bottom: 20px; text-align: center; transition: background 0.2s, box-shadow 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-    .gmake-compose-btn:hover { background: #b1ddfa; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-    .gmake-folder { display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; border-radius: 0 16px 16px 0; cursor: pointer; color: #202124; font-size: 0.9rem; margin-bottom: 2px; }
-    .gmake-folder:hover { background: rgba(0,0,0,0.04); }
-    .gmake-folder.active { background: #d3e3fd; color: #0b57d0; font-weight: 600; }
-    .badge { background: var(--primary); color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.7rem; font-weight: bold; }
-    
-    /* Content Gmake */
-    .gmake-main { flex: 1; display: flex; flex-direction: column; background: white; }
-    
-    /* Top Toolbar */
-    .gmake-toolbar { padding: 10px 20px; border-bottom: 1px solid var(--border-color); display: flex; gap: 15px; align-items: center; background: white; }
-    .gmake-search-bar { flex: 1; max-width: 600px; display: flex; align-items: center; background: #f1f3f4; padding: 8px 15px; border-radius: 24px; }
-    .gmake-search-bar input { border: none; background: transparent; width: 100%; outline: none; font-size: 1rem; padding-left: 10px; }
-    .gmake-icon-btn { background: none; border: none; cursor: pointer; font-size: 1.2rem; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: #5f6368; }
-    .gmake-icon-btn:hover { background: #f1f3f4; }
-    
-    /* Action Bar (Checkbox, Refresh, etc) */
-    .gmake-actions { padding: 10px 20px; border-bottom: 1px solid var(--border-color); display: flex; gap: 10px; align-items: center; background: white; font-size: 0.9rem; }
-    
-    /* Lista de Correos */
-    .gmake-list-container { flex: 1; overflow-y: auto; background: white; }
-    .gmake-email-row { display: flex; align-items: center; padding: 8px 20px; border-bottom: 1px solid var(--border-color); cursor: pointer; background: #f2f6fc; transition: box-shadow 0.1s; }
-    .gmake-email-row:hover { box-shadow: inset 1px 0 0 #dadce0, inset -1px 0 0 #dadce0, 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15); z-index: 2; position: relative; }
-    .gmake-email-row.read { background: white; }
-    .gmake-email-row.read .gmake-subject-text { font-weight: 400; }
-    .gmake-email-row.read .gmake-sender { font-weight: 400; }
-    
-    .gmake-sender { width: 200px; font-weight: 700; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .gmake-subject { flex: 1; display: flex; align-items: center; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 20px; }
-    .gmake-subject-text { font-weight: 700; margin-right: 5px; }
-    .gmake-snippet { color: #5f6368; font-weight: 400; }
-    .gmake-date { width: 100px; text-align: right; font-size: 0.8rem; font-weight: 600; color: #5f6368; }
-    .gmake-email-row.read .gmake-date { font-weight: 400; }
-    
-    /* Iconos interactivos en la fila */
-    .row-checkbox { margin-right: 15px; cursor: pointer; }
-    .star-icon { color: #ccc; cursor: pointer; margin-right: 15px; font-size: 1.2rem; }
-    .star-icon.active { color: #f4b400; }
-
-    /* Autocompletado */
-    .autocomplete-items { position: absolute; border: 1px solid #d4d4d4; border-top: none; z-index: 99; top: 100%; left: 0; right: 0; background-color: #fff; max-height: 150px; overflow-y: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 0 0 4px 4px; }
-    .autocomplete-items div { padding: 10px; cursor: pointer; font-size: 0.9rem; border-bottom: 1px solid #eee; }
-    .autocomplete-items div:hover { background-color: #e9e9e9; }
-
-    /* Vista de Lectura de Correo */
-    .gmake-read-view { padding: 30px; }
-    .gmake-read-subject { font-size: 1.4rem; font-weight: 400; margin-bottom: 20px; }
-    .gmake-read-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-    .gmake-read-sender { font-weight: bold; font-size: 1rem; }
-    .gmake-read-to { font-size: 0.85rem; color: #5f6368; }
-    .gmake-read-body { font-size: 0.95rem; line-height: 1.6; white-space: pre-wrap; color: #202124; }
-
-    footer { background-color: #faf9f8; border-top: 1px solid var(--border-color); padding: 20px; text-align: center; font-size: 0.85rem; margin-top: auto; }
-    .secret-btn { background: transparent; border: none; color: transparent; cursor: pointer; font-size: 0.75rem; margin-left: 10px; }
-    .secret-btn:hover { color: #8a8886; }
-  </style>
-
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Makebyr · Apps, juegos y herramientas de la comunidad</title>
+<meta name="description" content="Makebyr es la página de nuestra comunidad: apps, juegos y herramientas web con una sola cuenta, y tu propio correo Gmake.">
+<meta name="theme-color" content="#0d1117">
+<link rel="icon" type="image/jpeg" href="favicon.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('theme')||'dark'}catch(e){}</script>
+<style>
+:root{--ink:#14181f;--mute:#5d6673;--bg:#f6f7f9;--card:#fff;--line:#dfe3e8;--acc:#1f6feb;--acc2:#1558c4;--soft:#e8f0fe;--bad:#d1242f;--ok:#1a7f37;--gold:#bf8700;--f:'DM Sans',system-ui,sans-serif;--d:'Bricolage Grotesque','DM Sans',system-ui,sans-serif}
+[data-theme=dark]{--ink:#e6edf3;--mute:#8b949e;--bg:#0d1117;--card:#161b22;--line:#2d333b;--acc:#58a6ff;--acc2:#79b8ff;--soft:#172033;--bad:#f85149;--ok:#3fb950;--gold:#e3b341}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{font:16px/1.55 var(--f);background:var(--bg);color:var(--ink);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+h1,h2,h3,h4{font-family:var(--d);line-height:1.1;letter-spacing:-.025em}
+#loader{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;justify-content:center;align-items:center;transition:opacity .5s}
+#loader b{display:inline-block;font:800 clamp(2.6rem,11vw,5rem) var(--d);color:var(--acc);opacity:0;transform:translateY(-90vh) rotate(-18deg);animation:fall .8s cubic-bezier(.2,.9,.3,1.25) forwards}
+@keyframes fall{to{opacity:1;transform:none}}
+header{position:sticky;top:0;z-index:100;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.bar{max-width:1120px;margin:auto;padding:0 20px;height:64px;display:flex;align-items:center;gap:22px}
+.logo{display:flex;align-items:center;gap:9px;font:800 1.3rem var(--d);color:var(--ink);text-decoration:none;letter-spacing:-.04em}
+.logo img{width:26px;height:26px;border-radius:6px}
+nav{display:flex;gap:2px;margin-right:auto}
+nav button{background:none;border:0;color:var(--mute);padding:8px 11px;border-radius:7px;font-size:.92rem;white-space:nowrap}
+nav button:hover{color:var(--ink)}nav button.on{color:var(--acc);background:var(--soft)}
+.right{display:flex;align-items:center;gap:8px}
+#who{color:var(--mute);font-size:.85rem;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn{border:1px solid transparent;background:var(--acc);color:#fff;padding:8px 16px;border-radius:7px;font-weight:600;font-size:.92rem;text-decoration:none;display:inline-block;text-align:center}
+[data-theme=dark] .btn{color:#0d1117}
+.btn:hover{background:var(--acc2)}
+.btn.ghost{background:none;color:var(--ink);border-color:var(--line)}.btn.ghost:hover{border-color:var(--acc)}
+.btn.red{background:none;color:var(--bad);border-color:var(--bad)}.btn.red:hover{background:var(--bad);color:#fff}
+.btn.big{padding:12px 22px;font-size:1rem}
+.sq{width:36px;height:36px;border-radius:7px;background:none;border:1px solid var(--line);color:var(--mute);display:grid;place-items:center}
+.sq:hover{color:var(--ink);border-color:var(--acc)}
+main{max-width:1120px;width:100%;margin:auto;padding:0 20px 80px;flex:1}
+.hero{padding:76px 0 8px}
+.tag{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:5px 13px;font-size:.84rem;color:var(--mute);margin-bottom:22px}
+.tag i{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px color-mix(in srgb,var(--ok) 22%,transparent)}
+.hero h1{font-size:clamp(2.4rem,7vw,4.6rem);font-weight:800;max-width:14ch}
+.hero h1 em{font-style:normal;color:var(--acc)}
+.hero p{color:var(--mute);font-size:1.1rem;max-width:52ch;margin:20px 0 28px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.ticker{overflow:hidden;margin-top:56px;border-block:1px solid var(--line);padding:13px 0;mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+.ticker div{display:flex;gap:10px;width:max-content;animation:sl 32s linear infinite}
+.ticker:hover div{animation-play-state:paused}
+@keyframes sl{to{transform:translateX(-50%)}}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:7px;padding:4px 11px;font-size:.84rem;color:var(--mute);white-space:nowrap}
+.blk{padding-top:84px}
+.k{color:var(--acc);font-weight:600;font-size:.9rem;margin-bottom:8px}
+.blk>h2{font-size:clamp(1.8rem,4vw,2.5rem);max-width:20ch;margin-bottom:12px}
+.lead{color:var(--mute);max-width:58ch;margin-bottom:30px}
+.about{display:grid;grid-template-columns:1.1fr 1fr;gap:36px;align-items:start}
+.about aside{display:grid;gap:12px}
+.fact{border-left:2px solid var(--acc);padding:2px 0 2px 14px}.fact small{display:block;color:var(--mute)}
+.pil{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:8px}
+.pil div{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:18px}
+.pil div:nth-child(2),.pil div:nth-child(4){margin-top:14px}
+.pil h4{font-size:1.05rem;margin-bottom:5px}.pil p{color:var(--mute);font-size:.9rem}
+.doors{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:34px}
+.door{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:grid;gap:1px}
+.door:hover{border-color:var(--acc)}
+.door b{font:800 1.9rem var(--d);color:var(--acc)}.door span{color:var(--mute);font-size:.86rem}
+.head{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.head h3{font-size:1.25rem}
+input[type=search],.fld input,.fld select,.fld textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:7px;background:var(--bg)}
+input[type=search]{width:auto;min-width:240px;border-radius:99px;background:var(--card)}
+.fld input:focus,.fld select:focus,.fld textarea:focus,input[type=search]:focus{outline:0;border-color:var(--acc);box-shadow:0 0 0 3px var(--soft)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;justify-content:space-between;gap:18px}
+.card:hover{border-color:var(--acc)}
+.card h3{font-size:1.15rem;margin:7px 0 5px}.card p{color:var(--mute);font-size:.92rem}
+.cat{display:inline-flex;align-items:center;gap:7px;color:var(--mute);font-size:.8rem;font-weight:600}
+.cat::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--acc)}
+.cat.juegos::before{background:var(--gold)}.cat.tools::before{background:var(--ok)}
+.foot-c{display:flex;gap:8px}
+.none{color:var(--mute);padding:20px 0}
+.steps{border-left:2px solid var(--line);margin-left:6px;display:grid;gap:26px}
+.steps div{position:relative;padding-left:26px}
+.steps div::before{content:'';position:absolute;left:-7px;top:7px;width:12px;height:12px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 4px var(--bg)}
+.steps small{color:var(--mute)}.steps h3{font-size:1.2rem;margin:2px 0 3px}.steps p{color:var(--mute);max-width:54ch}
+.contact{display:grid;grid-template-columns:1fr 1.25fr;gap:34px}
+.box{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:24px}
+.fld{margin-bottom:14px;position:relative}
+.fld label{display:block;font-size:.84rem;font-weight:600;margin-bottom:5px}
+.sec-title{margin:40px 0 6px;font-size:2rem}
+.admin{display:none;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:20px;padding:10px 16px;border:1px solid var(--acc);background:var(--soft);border-radius:9px}
+.modal{position:fixed;inset:0;background:rgba(5,8,14,.65);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:1000;padding:16px}
+.mc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:28px;width:100%;max-width:430px;position:relative}
+.mc h2{font-size:1.5rem;margin-bottom:18px}
+.x{position:absolute;top:12px;right:14px;background:none;border:0;color:var(--mute);font-size:1.1rem}
+.mail{display:flex;margin-top:28px;height:74vh;min-height:480px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card)}
+.side{width:218px;background:var(--bg);border-right:1px solid var(--line);padding:14px 10px;overflow-y:auto}
+.side .btn{width:100%;margin-bottom:14px}
+.fol{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-radius:7px;font-size:.9rem;cursor:pointer;margin-bottom:2px}
+.fol:hover{background:var(--soft)}.fol.on{background:var(--soft);color:var(--acc);font-weight:600}
+.bdg{background:var(--acc);color:#fff;border-radius:9px;padding:0 7px;font-size:.72rem;font-weight:700;display:none}
+[data-theme=dark] .bdg{color:#0d1117}
+.mm{flex:1;min-width:0;display:flex;flex-direction:column}
+.tb{display:flex;gap:10px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line)}
+.tb input{flex:1;max-width:480px;padding:8px 14px;border:0;border-radius:99px;background:var(--bg);outline:0}
+.act{display:flex;gap:8px;align-items:center;padding:7px 16px;border-bottom:1px solid var(--line);font-size:.86rem;color:var(--mute)}
+.act button{background:none;border:0;color:var(--mute);padding:4px 8px;border-radius:6px}.act button:hover{background:var(--soft);color:var(--ink)}
+#mview{flex:1;overflow-y:auto}
+.er{display:flex;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--soft)}
+.er.read{background:var(--card)}.er:hover{box-shadow:inset 3px 0 0 var(--acc)}
+.er .s{width:190px;font-weight:700;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.er .t{flex:1;min-width:0;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:16px}
+.er .t b{margin-right:6px}.er .t span{color:var(--mute)}
+.er .d{width:80px;text-align:right;font-size:.78rem;color:var(--mute)}
+.er.read .s,.er.read .t b{font-weight:400}
+.er input{margin-right:12px}
+.star{background:none;border:0;color:var(--line);font-size:1.15rem;margin-right:12px}.star.on{color:#f4b400}
+.rd{padding:28px}.rd h2{font-size:1.5rem;margin:16px 0 20px}
+.rd .m{display:flex;justify-content:space-between;gap:12px;margin-bottom:24px;color:var(--mute);font-size:.85rem}
+.rd .m strong{color:var(--ink);display:block;font-size:1rem}
+.rd pre{font:inherit;white-space:pre-wrap;line-height:1.7}
+.ac{position:absolute;left:0;right:0;top:100%;background:var(--card);border:1px solid var(--line);border-radius:0 0 8px 8px;z-index:9;max-height:150px;overflow:auto;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+.ac div{padding:9px 12px;cursor:pointer;font-size:.9rem;border-bottom:1px solid var(--line)}.ac div:hover{background:var(--soft)}
+footer{border-top:1px solid var(--line);background:var(--card)}
+.fi{max-width:1120px;margin:auto;padding:30px 20px;display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.fi p{color:var(--mute);font-size:.9rem;margin-top:5px;max-width:34ch}
+.fi nav{gap:14px;margin:0}.fi nav button{padding:0;color:var(--mute)}.fi nav button:hover{background:none;color:var(--acc)}
+.fb{max-width:1120px;margin:auto;padding:14px 20px 22px;border-top:1px solid var(--line);color:var(--mute);font-size:.82rem}
+.sx{background:none;border:0;color:transparent;font-size:.75rem;margin-left:10px}.sx:hover{color:var(--mute)}
+#toasts{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:grid;gap:8px;z-index:99999;width:max-content;max-width:92vw}
+.toast{background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:9px;font-size:.92rem;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.toast.err{background:var(--bad);color:#fff}
+@media(max-width:780px){.bar{flex-wrap:wrap;height:auto;padding:10px 16px;gap:8px}nav{order:3;width:100%;overflow-x:auto}.hero{padding-top:44px}.about,.contact{grid-template-columns:1fr}.blk{padding-top:56px}.side{width:150px}.er .s{width:100px}.er .d{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 <body>
 
-  <!-- PANTALLA DE CARGA -->
-  <div id="loader">
-    <div class="falling-text">
-      <span class="letter m">M</span>
-      <span class="letter a">a</span>
-      <span class="letter k">k</span>
-      <span class="letter e">e</span>
-      <span class="letter b">b</span>
-      <span class="letter y">y</span>
-      <span class="letter r">r</span>
-    </div>
+<div id="loader" aria-hidden="true"></div>
+
+<header><div class="bar">
+  <a href="#" class="logo" onclick="go('inicio');return false"><img src="favicon.png" alt="" onerror="this.style.display='none'">Makebyr</a>
+  <nav id="nav">
+    <button data-s="inicio" class="on" onclick="go('inicio')">Inicio</button>
+    <button data-s="apps" onclick="go('apps')">Web Apps</button>
+    <button data-s="juegos" onclick="go('juegos')">Juegos</button>
+    <button data-s="tools" onclick="go('tools')">Herramientas</button>
+    <button data-s="gmake" onclick="go('gmake')">Gmake Mail</button>
+    <button onclick="goTo('about')">Nosotros</button>
+    <button onclick="goTo('contact')">Contacto</button>
+  </nav>
+  <div class="right">
+    <button class="sq" onclick="toggleTheme()" aria-label="Cambiar tema" title="Claro / oscuro">◐</button>
+    <span id="who"></span>
+    <button id="authBtn" class="btn" onclick="openAuth()">Iniciar sesión</button>
   </div>
+</div></header>
 
-  <header>
-    <div class="nav-container">
-      <a href="#" class="brand-logo" onclick="showSection('inicio')">
-        <img src="favicon.png" alt="MB" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%230078d4\'><circle cx=\'12\' cy=\'12\' r=\'10\'/></svg>'">
-        Makebyr
-      </a>
-      <nav>
-        <button class="nav-btn active" onclick="showSection('inicio')">Inicio</button>
-        <button class="nav-btn" onclick="showSection('apps')">Web Apps</button>
-        <button class="nav-btn" onclick="showSection('juegos')">Juegos</button>
-        <button class="nav-btn" onclick="showSection('tools')">Herramientas</button>
-        <button class="nav-btn" onclick="showSection('gmake')">Gmake Mail</button>
-      </nav>
-      <div class="user-actions">
-        <span id="user-display" style="font-size: 0.85rem; font-weight: 600;"></span>
-        <button id="btn-auth" class="btn-primary" onclick="openAuthModal()">Iniciar Sesión</button>
+<main>
+  <div id="admin" class="admin"><strong>Modo administrador</strong><div class="row"><button class="btn ghost" onclick="openUsers()">Usuarios</button><button class="btn" onclick="show('m-add')">+ Publicar</button><button class="btn red" onclick="logoutAdmin()">Salir</button></div></div>
+
+  <section id="s-inicio">
+    <div class="hero">
+      <span class="tag"><i></i>Comunidad abierta · únete gratis</span>
+      <h1>Hacemos cosas <em>para la comunidad.</em></h1>
+      <p>Web apps, juegos y herramientas hechos en Makebyr. Con una sola cuenta @makebyr.en entras a todo, incluido tu propio correo.</p>
+      <div class="row">
+        <button class="btn big" onclick="goTo('projects')">Ver proyectos</button>
+        <button class="btn big ghost" onclick="openAuth(true)">Crear cuenta</button>
       </div>
     </div>
-  </header>
+    <div class="ticker" aria-hidden="true"><div id="ticker"></div></div>
 
-  <main>
-    <div id="admin-panel" class="admin-bar" style="display: none;">
-      <div><strong>Modo Administrador Activo</strong></div>
-      <div>
-        <button class="btn-primary" onclick="openAddContentModal()">+ Publicar</button>
-        <button class="btn-danger" onclick="logoutAdmin()">Cerrar Admin</button>
+    <div class="blk" id="about">
+      <p class="k">Sobre Makebyr</p>
+      <h2>Una marca digital hecha entre todos</h2>
+      <div class="about">
+        <div>
+          <p class="lead">Publicamos proyectos web que puedes usar al momento, sin instalar nada, y los unimos con una sola cuenta para que no tengas que registrarte mil veces.</p>
+          <div class="pil">
+            <div><h4>Web Apps</h4><p>Programas que corren en tu navegador.</p></div>
+            <div><h4>Juegos</h4><p>Para jugar con amigos, sin descargas.</p></div>
+            <div><h4>Herramientas</h4><p>Utilidades simples del día a día.</p></div>
+            <div><h4>Gmake Mail</h4><p>Tu correo @makebyr.en en la comunidad.</p></div>
+          </div>
+        </div>
+        <aside>
+          <div class="fact"><small>Cuenta</small>Una sola para todo</div>
+          <div class="fact"><small>Precio</small>Gratis</div>
+          <div class="fact"><small>Instalación</small>Ninguna, todo en el navegador</div>
+          <div class="fact"><small>Publicaciones</small><span id="total">0</span> y contando</div>
+        </aside>
       </div>
     </div>
 
-    <!-- SECCIONES BÁSICAS -->
-    <section id="sec-inicio">
-      <div class="hero-banner">
-        <h1>Bienvenido a Makebyr Digital</h1>
-        <p>Tu cuenta única para explorar aplicaciones, herramientas y conectar con otras plataformas.</p>
+    <div class="blk" id="projects">
+      <p class="k">Proyectos</p>
+      <h2>Lo último que publicamos</h2>
+      <p class="lead">Entra a una sección o busca por nombre.</p>
+      <div class="doors">
+        <button class="door" onclick="go('apps')"><b id="n-apps">0</b>Web Apps<span>Corren en tu navegador</span></button>
+        <button class="door" onclick="go('juegos')"><b id="n-juegos">0</b>Juegos<span>Sin instalar nada</span></button>
+        <button class="door" onclick="go('tools')"><b id="n-tools">0</b>Herramientas<span>Para el día a día</span></button>
       </div>
-      <h2 style="margin-bottom: 15px;">Últimas Publicaciones</h2>
-      <div id="grid-destacados" class="grid-container"></div>
-    </section>
-    <section id="sec-apps" style="display: none;"><h2>Web Apps</h2><div id="grid-apps" class="grid-container"></div></section>
-    <section id="sec-juegos" style="display: none;"><h2>Juegos Web</h2><div id="grid-juegos" class="grid-container"></div></section>
-    <section id="sec-tools" style="display: none;"><h2>Web Tools</h2><div id="grid-tools" class="grid-container"></div></section>
-
-    <!-- GMAKE MAIL SYSTEM - VERSIÓN AVANZADA -->
-    <section id="sec-gmake" style="display: none;">
-      <div id="gmake-unauth" style="padding: 40px; text-align: center; background: white; border-radius: 8px; border: 1px solid var(--border-color);">
-        <h2>Bienvenido a Gmake</h2>
-        <p style="margin: 15px 0;">Debes iniciar sesión con tu cuenta @makebyr.en para gestionar tu correo.</p>
-        <button class="btn-primary" onclick="openAuthModal()">Iniciar Sesión</button>
-      </div>
-      
-      <div id="gmake-auth" class="gmake-container" style="display: none;">
-        <!-- Barra lateral -->
-        <div class="gmake-sidebar">
-          <button class="gmake-compose-btn" onclick="showGmakeCompose()">✎ Redactar</button>
-          
-          <div class="gmake-folder active" id="folder-inbox" onclick="loadGmakeFolder('inbox')">
-            <span>📥 Recibidos</span><span class="badge" id="badge-inbox">0</span>
-          </div>
-          <div class="gmake-folder" id="folder-promotions" onclick="loadGmakeFolder('promotions')">
-            <span>🏷️ Promociones</span><span class="badge" id="badge-promos" style="background:#1a73e8; display:none;">0</span>
-          </div>
-          <div class="gmake-folder" id="folder-social" onclick="loadGmakeFolder('social')">
-            <span>👥 Social</span>
-          </div>
-          <div class="gmake-folder" id="folder-starred" onclick="loadGmakeFolder('starred')">
-            <span>⭐ Destacados</span>
-          </div>
-          <div class="gmake-folder" id="folder-sent" onclick="loadGmakeFolder('sent')">
-            <span>📤 Enviados</span>
-          </div>
-          <br>
-          <div class="gmake-folder" id="folder-spam" onclick="loadGmakeFolder('spam')">
-            <span>⚠️ Spam</span>
-          </div>
-          <div class="gmake-folder" id="folder-trash" onclick="loadGmakeFolder('trash')">
-            <span>🗑️ Papelera</span>
-          </div>
-        </div>
-        
-        <!-- Contenido principal -->
-        <div class="gmake-main">
-          <!-- Buscador superior -->
-          <div class="gmake-toolbar">
-            <div class="gmake-search-bar">
-              <span>🔍</span>
-              <input type="text" id="gmake-search-input" placeholder="Buscar en el correo" onkeyup="filterGmakeEmails()">
-            </div>
-            <div style="flex:1;"></div>
-            <button class="gmake-icon-btn" title="Configuración">⚙️</button>
-            <button class="gmake-icon-btn" title="Aplicaciones Makebyr">🔲</button>
-          </div>
-          
-          <!-- Barra de acciones -->
-          <div class="gmake-actions" id="gmake-action-bar">
-            <input type="checkbox" id="gmake-select-all" onclick="toggleSelectAllEmails()">
-            <button class="gmake-icon-btn" onclick="loadGmakeFolder(currentFolder)" title="Actualizar">🔄</button>
-            <button class="gmake-icon-btn" onclick="markSelectedAsRead()" title="Marcar leídos">📖</button>
-            <button class="gmake-icon-btn" onclick="deleteSelectedEmails()" title="Eliminar seleccionados">🗑️</button>
-            <span style="margin-left: auto; color: #5f6368; font-size: 0.8rem;" id="gmake-pagination">1-50 de muchos</span>
-          </div>
-
-          <!-- Lista de correos / Redactar / Ver -->
-          <div class="gmake-list-container" id="gmake-view">
-            <!-- Se llena dinámicamente -->
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <span>Makebyr Digital Brand © 2026</span>
-    <button class="secret-btn" onclick="triggerSecretAdmin()">467638</button>
-  </footer>
-
-  <!-- Modales de Autenticación, SSO y Publicación (Ocultos) -->
-  <div id="modal-auth" class="modal-overlay">
-    <div class="modal-content">
-      <button class="close-modal" onclick="closeAuthModal()">✕</button>
-      <h2 id="auth-title">Iniciar Sesión</h2>
-      <div class="form-group">
-        <label>Usuario</label>
-        <div class="email-input-wrapper">
-          <input type="text" id="auth-username" placeholder="tu-usuario">
-          <span class="email-domain-tag">@makebyr.en</span>
-        </div>
-      </div>
-      <div class="form-group"><label>Contraseña</label><input type="password" id="auth-password" placeholder="••••••••"></div>
-      <button class="btn-primary" style="width: 100%;" onclick="handleAuthSubmit()">Continuar</button>
-      <p style="text-align: center; margin-top: 15px; font-size: 0.85rem;"><a href="#" onclick="toggleAuthMode()" id="auth-toggle-text">¿No tienes cuenta? Regístrate aquí</a></p>
+      <div class="head"><h3>Publicaciones recientes</h3><input type="search" id="q" placeholder="Buscar publicaciones" aria-label="Buscar" oninput="filterPosts()"></div>
+      <div id="g-destacados" class="grid"></div>
     </div>
+
+    <div class="blk" id="how">
+      <p class="k">Cómo empezar</p>
+      <h2>Tres pasos y estás dentro</h2>
+      <div class="steps" style="margin-top:28px">
+        <div><small>Paso 1</small><h3>Crea tu cuenta</h3><p>Elige un usuario y tendrás tu correo @makebyr.en al instante.</p></div>
+        <div><small>Paso 2</small><h3>Explora los proyectos</h3><p>Abre apps, juegos y herramientas con la misma sesión.</p></div>
+        <div><small>Paso 3</small><h3>Escribe por Gmake</h3><p>Manda y recibe correos con otros miembros.</p></div>
+      </div>
+    </div>
+
+    <div class="blk" id="contact">
+      <p class="k">Contacto</p>
+      <h2>¿Quieres hablar con nosotros?</h2>
+      <p class="lead">Escríbenos si tienes una duda o una idea para publicar.</p>
+      <div class="contact">
+        <div style="display:grid;gap:14px;align-content:start"><div class="fact"><small>Respondemos en</small>Menos de 48 horas</div><div class="fact"><small>También</small>Por Gmake, a la cuenta de Makebyr</div></div>
+        <form class="box" onsubmit="sendContact(event)">
+          <div class="fld"><label for="c1">Nombre</label><input id="c1" required maxlength="60"></div>
+          <div class="fld"><label for="c2">Correo</label><input id="c2" type="email" required maxlength="80"></div>
+          <div class="fld"><label for="c3">Mensaje</label><textarea id="c3" rows="4" required maxlength="800"></textarea></div>
+          <button class="btn" style="width:100%">Enviar mensaje</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section id="s-apps" hidden><h2 class="sec-title">Web Apps</h2><p class="lead">Programas que corren en tu navegador.</p><div id="g-apps" class="grid"></div></section>
+  <section id="s-juegos" hidden><h2 class="sec-title">Juegos</h2><p class="lead">Para jugar sin instalar nada.</p><div id="g-juegos" class="grid"></div></section>
+  <section id="s-tools" hidden><h2 class="sec-title">Herramientas</h2><p class="lead">Utilidades para el día a día.</p><div id="g-tools" class="grid"></div></section>
+
+  <section id="s-gmake" hidden>
+    <div id="mOut" class="box" style="text-align:center;margin-top:40px;padding:48px 20px">
+      <h2 style="margin-bottom:8px">Gmake Mail</h2>
+      <p class="lead" style="margin:0 auto 18px">Inicia sesión con tu cuenta @makebyr.en para ver tu correo.</p>
+      <button class="btn" onclick="openAuth()">Iniciar sesión</button>
+    </div>
+    <div id="mIn" class="mail" style="display:none">
+      <div class="side">
+        <button class="btn" onclick="compose()">Redactar</button>
+        <div class="fol on" id="f-inbox" onclick="loadFolder('inbox')"><span>Recibidos</span><span class="bdg" id="b-inbox">0</span></div>
+        <div class="fol" id="f-promotions" onclick="loadFolder('promotions')"><span>Promociones</span><span class="bdg" id="b-promotions">0</span></div>
+        <div class="fol" id="f-social" onclick="loadFolder('social')"><span>Social</span></div>
+        <div class="fol" id="f-starred" onclick="loadFolder('starred')"><span>Destacados</span></div>
+        <div class="fol" id="f-sent" onclick="loadFolder('sent')"><span>Enviados</span></div>
+        <div class="fol" id="f-spam" onclick="loadFolder('spam')"><span>Spam</span></div>
+        <div class="fol" id="f-trash" onclick="loadFolder('trash')"><span>Papelera</span></div>
+      </div>
+      <div class="mm">
+        <div class="tb"><input id="ms" placeholder="Buscar en el correo" oninput="filterMail()" aria-label="Buscar en el correo"></div>
+        <div class="act" id="act">
+          <input type="checkbox" id="all" onclick="selAll()" aria-label="Seleccionar todo">
+          <button onclick="loadFolder(folder)">Actualizar</button>
+          <button onclick="markRead()">Marcar leídos</button>
+          <button onclick="delSel()">Eliminar</button>
+          <span style="margin-left:auto" id="cnt"></span>
+        </div>
+        <div id="mview"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="fi">
+    <div><strong style="font:800 1.2rem var(--d)">Makebyr</strong><p>Apps, juegos y herramientas hechos por la comunidad.</p></div>
+    <nav><button onclick="go('apps')">Web Apps</button><button onclick="go('juegos')">Juegos</button><button onclick="go('tools')">Herramientas</button><button onclick="go('gmake')">Gmake</button></nav>
   </div>
+  <div class="fb">Makebyr Digital Brand © 2026<button class="sx" onclick="adminLogin()" aria-label="Admin">467638</button></div>
+</footer>
 
-  <div id="modal-sso" class="modal-overlay" style="background: rgba(255,255,255,0.9);">
-    <div class="modal-content" style="border: 1px solid var(--primary); text-align: center;">
-      <h2 style="color: var(--primary); margin-bottom: 5px;">Inicio de Sesión Makebyr</h2>
-      <p style="margin-bottom: 20px;">La app <strong id="sso-app-name">App</strong> solicita acceso.</p>
-      <div id="sso-login-req" style="display: none;"><p style="color: #d13438;">Inicia sesión para continuar.</p><button class="btn-primary" onclick="openAuthModal()">Iniciar Sesión</button></div>
-      <div id="sso-auth-req" style="display: none;"><p style="background: #f3f2f1; padding: 10px;">Conectando: <strong id="sso-user-email"></strong></p><button class="btn-success" style="width: 100%; margin-bottom: 10px;" onclick="approveSSO()">Autorizar</button><button class="btn-danger" style="width: 100%;" onclick="cancelSSO()">Cancelar</button></div>
-    </div>
+<div id="m-auth" class="modal"><div class="mc">
+  <button class="x" onclick="hide('m-auth')" aria-label="Cerrar">✕</button>
+  <h2 id="aTitle">Iniciar sesión</h2>
+  <div class="fld"><label for="au">Usuario</label><div style="display:flex"><input id="au" placeholder="tu-usuario" autocomplete="username" style="border-radius:7px 0 0 7px"><span class="chip" style="border-radius:0 7px 7px 0;display:grid;place-items:center">@makebyr.en</span></div></div>
+  <div class="fld"><label for="ap">Contraseña</label><input id="ap" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')authSubmit()"></div>
+  <button class="btn" style="width:100%" onclick="authSubmit()">Continuar</button>
+  <p style="text-align:center;margin-top:14px;font-size:.88rem"><a href="#" id="aSwap" style="color:var(--acc)" onclick="swapAuth();return false">¿No tienes cuenta? Regístrate aquí</a></p>
+</div></div>
+
+<div id="m-sso" class="modal"><div class="mc" style="text-align:center">
+  <h2>Inicio de sesión Makebyr</h2>
+  <p style="margin-bottom:18px;color:var(--mute)">La app <strong id="ssoApp" style="color:var(--ink)">App</strong> solicita acceso.</p>
+  <div id="ssoNo" style="display:none"><p style="color:var(--bad);margin-bottom:12px">Inicia sesión para continuar.</p><button class="btn" onclick="openAuth()">Iniciar sesión</button></div>
+  <div id="ssoYes" style="display:none"><p class="box" style="padding:10px;margin-bottom:12px">Conectando: <strong id="ssoMail"></strong></p><button class="btn" style="width:100%;margin-bottom:10px" onclick="ssoOk()">Autorizar</button><button class="btn red" style="width:100%" onclick="ssoCancel()">Cancelar</button></div>
+</div></div>
+
+<div id="m-add" class="modal"><div class="mc">
+  <button class="x" onclick="hide('m-add')" aria-label="Cerrar">✕</button>
+  <h2>Publicar</h2>
+  <div class="fld"><label for="pc">Categoría</label><select id="pc"><option value="apps">Web App</option><option value="juegos">Juego</option><option value="tools">Herramienta</option></select></div>
+  <div class="fld"><label for="pt">Título</label><input id="pt"></div>
+  <div class="fld"><label for="pd">Descripción</label><textarea id="pd" rows="3"></textarea></div>
+  <div class="fld"><label for="pl">Enlace</label><input id="pl" type="url" placeholder="https://"></div>
+  <button class="btn" style="width:100%" onclick="savePost()">Publicar</button>
+</div></div>
+
+<div id="m-users" class="modal"><div class="mc" style="max-width:520px">
+  <button class="x" onclick="hide('m-users')" aria-label="Cerrar">✕</button>
+  <h2>Usuarios</h2>
+  <p class="lead" style="margin-bottom:14px;font-size:.9rem">Si alguien olvidó su contraseña, ponle una nueva y pásasela.</p>
+  <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+    <input id="ru" class="fld" placeholder="Usuario (ej: bryan16767)" aria-label="Usuario" style="flex:1;min-width:150px;padding:10px 12px;border:1px solid var(--line);border-radius:7px;background:var(--bg)">
+    <button class="btn" onclick="resetByName()">Cambiar contraseña</button>
   </div>
+  <input type="search" id="uq" placeholder="Buscar usuario" aria-label="Buscar usuario" style="width:100%;margin-bottom:12px" oninput="drawUsers()">
+  <div id="ulist" style="max-height:50vh;overflow-y:auto"></div>
+</div></div>
 
-  <div id="modal-admin-add" class="modal-overlay">
-    <div class="modal-content">
-      <button class="close-modal" onclick="closeAddContentModal()">✕</button>
-      <h2>Publicar</h2>
-      <div class="form-group"><label>Categoría</label><select id="admin-category"><option value="apps">Web App</option><option value="juegos">Juego</option><option value="tools">Herramienta</option></select></div>
-      <div class="form-group"><label>Título</label><input type="text" id="admin-title"></div>
-      <div class="form-group"><label>Descripción</label><textarea id="admin-desc" rows="3"></textarea></div>
-      <div class="form-group"><label>Enlace</label><input type="url" id="admin-link"></div>
-      <button class="btn-primary" style="width: 100%;" onclick="saveContent()">Publicar</button>
-    </div>
-  </div>
+<script>
+/* ---------- utilidades ---------- */
+const $ = id => document.getElementById(id);
+const esc = t => String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const show = id => $(id).style.display = 'flex';
+const hide = id => $(id).style.display = 'none';
+const safeUrl = u => /^https?:\/\//i.test(u) ? u : '#';
+async function sha(t) {
+  if (!(window.crypto && crypto.subtle)) return t;
+  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t));
+  return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
+}
+function toast(m) {
+  const w = $('toasts') || Object.assign(document.body.appendChild(document.createElement('div')), {id: 'toasts'});
+  const t = document.createElement('div');
+  t.className = 'toast' + (/incorrect|ya est|completa|selecciona|faltan|error|hubo|nimo|usuario:/i.test(m) ? ' err' : '');
+  t.textContent = m; w.appendChild(t); setTimeout(() => t.remove(), 3500);
+}
+function toggleTheme() {
+  const n = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = n;
+  try { localStorage.setItem('theme', n); } catch (e) {}
+}
 
-  <!-- SCRIPT LÓGICA COMPLETA -->
-  <script>
-    // 1. ANIMACIÓN DE CARGA (Ocultar al terminar)
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        const loader = document.getElementById('loader');
-        loader.style.opacity = '0';
-        setTimeout(() => loader.style.display = 'none', 500);
-      }, 1500); // Dar tiempo a ver la animación de caída
-    });
+/* ---------- carga y decoración ---------- */
+$('loader').innerHTML = [...'Makebyr'].map((c, i) => `<b style="animation-delay:${.1 + i * .1}s">${c}</b>`).join('');
+addEventListener('load', () => setTimeout(() => { $('loader').style.opacity = 0; setTimeout(() => $('loader').style.display = 'none', 500); }, 1500));
+const tags = ['Web Apps', 'Juegos', 'Herramientas', 'Gmake Mail', 'Cuenta única', 'Comunidad', 'Sin instalar nada'];
+$('ticker').innerHTML = [...tags, ...tags].map(t => `<span class="chip">${t}</span>`).join('');
 
-    // 2. CONFIGURACIÓN FIREBASE REALTIME DATABASE (Sin Auth)
-    const firebaseConfig = {
-      apiKey: "AIzaSyCKvNViTMiARSW5sa5BoIZmF9cm7XL9bQY",
-      authDomain: "raty-studios-servers.firebaseapp.com",
-      databaseURL: "https://raty-studios-servers-default-rtdb.firebaseio.com",
-      projectId: "raty-studios-servers",
-      storageBucket: "raty-studios-servers.firebasestorage.app",
-      messagingSenderId: "1033991074708",
-      appId: "1:1033991074708:web:b39be9e157b357cd94d581"
-    };
+/* ---------- Firebase ---------- */
+firebase.initializeApp({
+  apiKey: "AIzaSyCKvNViTMiARSW5sa5BoIZmF9cm7XL9bQY",
+  authDomain: "raty-studios-servers.firebaseapp.com",
+  databaseURL: "https://raty-studios-servers-default-rtdb.firebaseio.com",
+  projectId: "raty-studios-servers",
+  storageBucket: "raty-studios-servers.firebasestorage.app",
+  messagingSenderId: "1033991074708",
+  appId: "1:1033991074708:web:b39be9e157b357cd94d581"
+});
+const db = firebase.database();
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+/* ---------- estado ---------- */
+let registerMode = false, isAdmin = false, user = null, mails = [], folder = 'inbox', allUsers = [], items = {};
+const redirectUri = new URLSearchParams(location.search).get('redirect_uri');
+const CATS = {apps: 'Web App', juegos: 'Juego', tools: 'Herramienta'};
 
-    // 3. ESTADO GLOBAL
-    let isRegisterMode = false;
-    let isAdmin = false;
-    let currentUser = null; 
-    let gmakeEmails = []; 
-    let currentFolder = 'inbox';
-    let allMakebyrUsers = []; // Para el autocompletado
+/* ---------- navegación ---------- */
+function go(s) {
+  ['inicio', 'apps', 'juegos', 'tools', 'gmake'].forEach(x => $('s-' + x).hidden = x !== s);
+  document.querySelectorAll('#nav button[data-s]').forEach(b => b.classList.toggle('on', b.dataset.s === s));
+  scrollTo(0, 0);
+  if (s === 'gmake' && user) loadFolder('inbox');
+}
+function goTo(id) { go('inicio'); setTimeout(() => $(id).scrollIntoView({behavior: 'smooth'}), 30); }
 
-    // SSO PARAMS
-    const urlParams = new URLSearchParams(window.location.search);
-    const redirectUri = urlParams.get('redirect_uri');
+/* ---------- sesión ---------- */
+function setUser(u) {
+  user = u;
+  $('who').textContent = u ? u.email : '';
+  $('authBtn').textContent = u ? 'Cerrar sesión' : 'Iniciar sesión';
+  $('authBtn').onclick = u ? logout : () => openAuth();
+  $('mOut').style.display = u ? 'none' : 'block';
+  $('mIn').style.display = u ? 'flex' : 'none';
+  if (u) { fetchUsers(); if (!$('s-gmake').hidden) loadFolder('inbox'); }
+  if (redirectUri) {
+    show('m-sso');
+    try { $('ssoApp').textContent = new URL(redirectUri).hostname; } catch (e) {}
+    $('ssoNo').style.display = u ? 'none' : 'block';
+    $('ssoYes').style.display = u ? 'block' : 'none';
+    if (u) $('ssoMail').textContent = u.email;
+  }
+}
+function openAuth(register) { if (register !== undefined && register !== registerMode) swapAuth(); show('m-auth'); }
+function swapAuth() {
+  registerMode = !registerMode;
+  $('aTitle').textContent = registerMode ? 'Crear cuenta @makebyr.en' : 'Iniciar sesión';
+  $('aSwap').textContent = registerMode ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate aquí';
+}
+async function authSubmit() {
+  const u = $('au').value.trim().replace('@makebyr.en', '').toLowerCase(), p = $('ap').value;
+  if (!u || !p) return toast('Completa usuario y contraseña.');
+  if (registerMode && (!/^[a-z0-9._-]{3,24}$/.test(u) || p.length < 6)) return toast('Usuario: 3 a 24 letras, números, punto o guion. Contraseña: mínimo 6 caracteres.');
+  const h = await sha(p), uid = u.replace(/[.#$/\[\]]/g, '_'), email = u + '@makebyr.en';
+  const ref = db.ref('makebyr_users/' + uid), snap = await ref.once('value');
+  if (registerMode) {
+    if (snap.exists()) return toast('Ese usuario ya está registrado.');
+    await ref.set({uid, username: u, email, passHash: h});
+    return start({uid, username: u, email});
+  }
+  const v = snap.val();
+  if (!v || !(v.passHash === h || v.password === p)) return toast('Usuario o contraseña incorrectos.');
+  if (v.password) ref.update({passHash: h, password: null}); // migra cuentas viejas
+  start({uid: v.uid, username: v.username, email: v.email});
+}
+function start(u) { localStorage.setItem('makebyr_session', JSON.stringify(u)); setUser(u); hide('m-auth'); toast('Sesión iniciada como ' + u.email); }
+function logout() { localStorage.removeItem('makebyr_session'); setUser(null); }
+function ssoOk() {
+  if (!user || !redirectUri) return;
+  const url = new URL(redirectUri);
+  url.searchParams.append('makebyr_uid', user.uid); url.searchParams.append('makebyr_email', user.email);
+  location.href = url.toString();
+}
+function ssoCancel() { location.href = redirectUri; }
 
-    // 4. SISTEMA DE SESIÓN
-    function handleAuthStateChanged(user) {
-      currentUser = user;
-      document.getElementById('user-display').innerText = user ? user.email : '';
-      document.getElementById('btn-auth').innerText = user ? 'Cerrar Sesión' : 'Iniciar Sesión';
-      document.getElementById('btn-auth').onclick = user ? logoutUser : openAuthModal;
-      
-      document.getElementById('gmake-unauth').style.display = user ? 'none' : 'block';
-      document.getElementById('gmake-auth').style.display = user ? 'flex' : 'none';
-      
-      if(user) {
-        fetchAllUsers(); // Cargar usuarios para autocompletar
-        if(document.getElementById('sec-gmake').style.display === 'block') loadGmakeFolder('inbox');
-      }
+/* ---------- contacto ---------- */
+function sendContact(e) {
+  e.preventDefault();
+  db.ref('makebyr_contact').push({name: $('c1').value.trim(), email: $('c2').value.trim(), message: $('c3').value.trim(), time: firebase.database.ServerValue.TIMESTAMP})
+    .then(() => { e.target.reset(); toast('Mensaje enviado. Te respondemos pronto.'); })
+    .catch(() => toast('Error: no se pudo enviar el mensaje.'));
+}
 
-      if (redirectUri) {
-        document.getElementById('modal-sso').style.display = 'flex';
-        try { document.getElementById('sso-app-name').innerText = new URL(redirectUri).hostname; } catch(e){}
-        if (user) {
-          document.getElementById('sso-login-req').style.display = 'none';
-          document.getElementById('sso-auth-req').style.display = 'block';
-          document.getElementById('sso-user-email').innerText = user.email;
-        } else {
-          document.getElementById('sso-login-req').style.display = 'block';
-          document.getElementById('sso-auth-req').style.display = 'none';
-        }
-      }
-    }
+/* ---------- Gmake Mail ---------- */
+function fetchUsers() { db.ref('makebyr_users').once('value', s => { allUsers = []; s.forEach(c => allUsers.push(c.val().email)); }); }
 
-    window.onload = () => {
-      const savedSession = localStorage.getItem('makebyr_session');
-      if (savedSession) handleAuthStateChanged(JSON.parse(savedSession));
-      loadContents(); 
-    };
-
-    function showSection(sectionId) {
-      ['inicio', 'apps', 'juegos', 'tools', 'gmake'].forEach(s => document.getElementById(`sec-${s}`).style.display = (s === sectionId) ? 'block' : 'none');
-      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.toggle('active', btn.getAttribute('onclick').includes(sectionId)));
-      if(sectionId === 'gmake' && currentUser) loadGmakeFolder('inbox');
-    }
-
-    // Modal de Sesión
-    function openAuthModal() { document.getElementById('modal-auth').style.display = 'flex'; }
-    function closeAuthModal() { document.getElementById('modal-auth').style.display = 'none'; }
-    function toggleAuthMode() {
-      isRegisterMode = !isRegisterMode;
-      document.getElementById('auth-title').innerText = isRegisterMode ? 'Crear Cuenta @makebyr.en' : 'Iniciar Sesión';
-      document.getElementById('auth-toggle-text').innerText = isRegisterMode ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate aquí';
-    }
-
-    function handleAuthSubmit() {
-      const u = document.getElementById('auth-username').value.trim().replace('@makebyr.en', '').toLowerCase();
-      const p = document.getElementById('auth-password').value;
-      if (!u || !p) return alert('Completa los campos.');
-      const fullEmail = `${u}@makebyr.en`;
-      const safeUid = u.replace(/[\.\#\$\/\[\]]/g, '_');
-      const ref = db.ref('makebyr_users/' + safeUid);
-
-      if (isRegisterMode) {
-        ref.once('value', snap => {
-          if (snap.exists()) alert('Usuario ya registrado.');
-          else {
-            const d = { uid: safeUid, username: u, email: fullEmail, password: p };
-            ref.set(d).then(() => {
-              localStorage.setItem('makebyr_session', JSON.stringify(d));
-              handleAuthStateChanged(d);
-              closeAuthModal();
-            });
-          }
-        });
-      } else {
-        ref.once('value', snap => {
-          if (snap.exists() && snap.val().password === p) {
-            localStorage.setItem('makebyr_session', JSON.stringify(snap.val()));
-            handleAuthStateChanged(snap.val());
-            closeAuthModal();
-          } else alert('Datos incorrectos.');
-        });
-      }
-    }
-    function logoutUser() { localStorage.removeItem('makebyr_session'); handleAuthStateChanged(null); }
-
-    // SSO
-    function approveSSO() {
-      if(!currentUser || !redirectUri) return;
-      const url = new URL(redirectUri);
-      url.searchParams.append('makebyr_uid', currentUser.uid);
-      url.searchParams.append('makebyr_email', currentUser.email);
-      window.location.href = url.toString();
-    }
-    function cancelSSO() { window.location.href = redirectUri; }
-
-    /* =========================================
-       5. SISTEMA GMAKE MAIL (AVANZADO)
-    ========================================= */
-
-    // Cargar todos los usuarios para el autocompletado rápido
-    function fetchAllUsers() {
-      db.ref('makebyr_users').once('value', snap => {
-        allMakebyrUsers = [];
-        snap.forEach(child => allMakebyrUsers.push(child.val().email));
-      });
-    }
-
-    // Interfaz para Redactar
-    function showGmakeCompose() {
-      document.querySelectorAll('.gmake-folder').forEach(el => el.classList.remove('active'));
-      document.getElementById('gmake-action-bar').style.display = 'none';
-      
-      document.getElementById('gmake-view').innerHTML = `
-        <div style="padding: 25px; max-width: 800px;">
-          <h2 style="margin-bottom: 20px; color:#202124;">Mensaje Nuevo</h2>
-          
-          <div class="form-group" style="position:relative;">
-            <input type="text" id="gmake-to" placeholder="Para (Ej: escribe 'j' para autocompletar)" onkeyup="handleAutocomplete(this.value)" autocomplete="off">
-            <div id="autocomplete-list" class="autocomplete-items"></div>
-          </div>
-          
-          <div class="form-group">
-            <select id="gmake-type">
-              <option value="inbox">Correo Normal</option>
-              <option value="promotions">Promoción / Anuncio</option>
-              <option value="social">Redes Sociales</option>
-            </select>
-          </div>
-
-          <div class="form-group"><input type="text" id="gmake-subject" placeholder="Asunto"></div>
-          
-          <div class="form-group">
-            <textarea id="gmake-body" rows="12" placeholder="Escribe tu mensaje aquí..." style="resize:vertical;"></textarea>
-          </div>
-          
-          <button class="btn-primary" style="padding: 10px 25px; font-size: 1rem; border-radius: 20px;" onclick="sendGmake()">Enviar</button>
-        </div>
-      `;
-    }
-
-    // Lógica de Autocompletado
-    function handleAutocomplete(val) {
-      const list = document.getElementById("autocomplete-list");
-      list.innerHTML = '';
-      if (!val) return;
-      const matches = allMakebyrUsers.filter(e => e.toLowerCase().includes(val.toLowerCase()));
-      matches.forEach(match => {
-        const div = document.createElement("DIV");
-        div.innerHTML = `<strong>${match.substr(0, val.length)}</strong>${match.substr(val.length)}`;
-        div.addEventListener("click", () => {
-          document.getElementById("gmake-to").value = match;
-          list.innerHTML = '';
-        });
-        list.appendChild(div);
-      });
-    }
-
-    // Enviar Correo
-    function sendGmake() {
-      const to = document.getElementById('gmake-to').value.trim();
-      const subject = document.getElementById('gmake-subject').value.trim();
-      const body = document.getElementById('gmake-body').value.trim();
-      const type = document.getElementById('gmake-type').value;
-      if(!to || !subject) return alert('Faltan datos en "Para" o "Asunto".');
-
-      const mailData = {
-        from: currentUser.email, to: to, subject: subject, body: body, folder: type,
-        timestamp: firebase.database.ServerValue.TIMESTAMP,
-        read: false, starred: false, trashed: false
-      };
-
-      db.ref('makebyr_emails').push(mailData).then(() => {
-        alert('Correo enviado exitosamente.');
-        loadGmakeFolder('inbox');
-      });
-    }
-
-    // Cargar Carpeta de Correos
-    function loadGmakeFolder(folderName) {
-      if(!currentUser) return;
-      currentFolder = folderName;
-      
-      document.querySelectorAll('.gmake-folder').forEach(el => el.classList.remove('active'));
-      if(document.getElementById(`folder-${folderName}`)) document.getElementById(`folder-${folderName}`).classList.add('active');
-      
-      document.getElementById('gmake-action-bar').style.display = 'flex';
-      const view = document.getElementById('gmake-view');
-      view.innerHTML = '<div style="padding: 20px; color:#5f6368;">Cargando correos...</div>';
-
-      // Consultar DB
-      let queryRef;
-      if(folderName === 'sent') {
-        queryRef = db.ref('makebyr_emails').orderByChild('from').equalTo(currentUser.email);
-      } else {
-        queryRef = db.ref('makebyr_emails').orderByChild('to').equalTo(currentUser.email);
-      }
-
-      queryRef.once('value', snap => {
-        gmakeEmails = [];
-        let unreadCount = 0;
-        let promoCount = 0;
-
-        snap.forEach(child => {
-          const m = child.val();
-          m.id = child.key;
-          
-          // Contadores globales para badges
-          if(!m.read && m.to === currentUser.email && !m.trashed && m.folder==='inbox') unreadCount++;
-          if(!m.read && m.to === currentUser.email && !m.trashed && m.folder==='promotions') promoCount++;
-
-          // Filtro por carpeta actual
-          let show = false;
-          if (folderName === 'sent') show = true;
-          else if (folderName === 'trash') show = m.trashed;
-          else if (folderName === 'starred') show = m.starred && !m.trashed;
-          else if (!m.trashed) {
-            if (folderName === 'inbox' && (!m.folder || m.folder === 'inbox')) show = true;
-            else if (folderName === m.folder) show = true;
-          }
-          if (show) gmakeEmails.push(m);
-        });
-
-        // Actualizar badges
-        document.getElementById('badge-inbox').innerText = unreadCount;
-        document.getElementById('badge-inbox').style.display = unreadCount > 0 ? 'inline-block' : 'none';
-        
-        const bPromo = document.getElementById('badge-promos');
-        bPromo.innerText = promoCount;
-        bPromo.style.display = promoCount > 0 ? 'inline-block' : 'none';
-
-        renderGmakeList(gmakeEmails);
-      });
-    }
-
-    // Renderizar Lista
-    function renderGmakeList(emails) {
-      const view = document.getElementById('gmake-view');
-      view.innerHTML = '';
-      if(emails.length === 0) return view.innerHTML = '<div style="padding: 30px; text-align: center; color: #5f6368;">No hay correos en esta carpeta.</div>';
-      
-      emails.reverse().forEach(mail => {
-        const isReadClass = mail.read ? 'read' : '';
-        const starClass = mail.starred ? 'active' : '';
-        const displayParty = currentFolder === 'sent' ? `Para: ${mail.to}` : mail.from;
-        
-        // Formatear Fecha
-        const d = new Date(mail.timestamp);
-        const dateStr = d.toLocaleDateString() === new Date().toLocaleDateString() 
-          ? d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) 
-          : d.toLocaleDateString([], {day: 'numeric', month: 'short'});
-
-        // Previsualización body
-        const snippet = mail.body.substring(0, 50).replace(/\n/g, ' ') + '...';
-
-        view.innerHTML += `
-          <div class="gmake-email-row ${isReadClass}" id="mail-row-${mail.id}">
-            <input type="checkbox" class="row-checkbox" value="${mail.id}" onclick="event.stopPropagation()">
-            <span class="star-icon ${starClass}" onclick="toggleStar('${mail.id}', ${!mail.starred}, event)">★</span>
-            <div class="gmake-sender" onclick="openGmakeEmail('${mail.id}')">${displayParty}</div>
-            <div class="gmake-subject" onclick="openGmakeEmail('${mail.id}')">
-              <span class="gmake-subject-text">${mail.subject}</span>
-              <span class="gmake-snippet">- ${snippet}</span>
-            </div>
-            <div class="gmake-date" onclick="openGmakeEmail('${mail.id}')">${dateStr}</div>
-          </div>
-        `;
-      });
-    }
-
-    // Abrir Correo Completo
-    function openGmakeEmail(id) {
-      const mail = gmakeEmails.find(m => m.id === id);
-      if(!mail) return;
-      
-      // Marcar leído
-      if(!mail.read && currentFolder !== 'sent') {
-        db.ref(`makebyr_emails/${id}`).update({read: true});
-        mail.read = true; // Reflejo local
-      }
-
-      document.getElementById('gmake-action-bar').style.display = 'none';
-      const view = document.getElementById('gmake-view');
-      const d = new Date(mail.timestamp).toLocaleString();
-      
-      view.innerHTML = `
-        <div class="gmake-read-view">
-          <button class="gmake-icon-btn" style="margin-bottom:20px;" onclick="loadGmakeFolder(currentFolder)" title="Volver">←</button>
-          <h2 class="gmake-read-subject">${mail.subject}</h2>
-          <div class="gmake-read-header">
-            <div>
-              <div class="gmake-read-sender">${mail.from}</div>
-              <div class="gmake-read-to">para ${mail.to}</div>
-            </div>
-            <div style="color: #5f6368; font-size: 0.85rem;">${d}</div>
-          </div>
-          <div class="gmake-read-body">${mail.body}</div>
-        </div>
-      `;
-    }
-
-    // Acciones de Herramientas
-    function toggleStar(id, state, e) {
-      e.stopPropagation();
-      db.ref(`makebyr_emails/${id}`).update({starred: state}).then(() => loadGmakeFolder(currentFolder));
-    }
-
-    function toggleSelectAllEmails() {
-      const isChecked = document.getElementById('gmake-select-all').checked;
-      document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = isChecked);
-    }
-
-    function getSelectedIds() {
-      return Array.from(document.querySelectorAll('.row-checkbox:checked')).map(cb => cb.value);
-    }
-
-    function deleteSelectedEmails() {
-      const ids = getSelectedIds();
-      if(ids.length === 0) return alert('Selecciona correos primero.');
-      ids.forEach(id => {
-        if(currentFolder === 'trash') db.ref(`makebyr_emails/${id}`).remove(); // Borrado definitivo
-        else db.ref(`makebyr_emails/${id}`).update({trashed: true});
-      });
-      setTimeout(() => loadGmakeFolder(currentFolder), 500);
-    }
-
-    function markSelectedAsRead() {
-      const ids = getSelectedIds();
-      ids.forEach(id => db.ref(`makebyr_emails/${id}`).update({read: true}));
-      setTimeout(() => loadGmakeFolder(currentFolder), 500);
-    }
-
-    function filterGmakeEmails() {
-      const txt = document.getElementById('gmake-search-input').value.toLowerCase();
-      const filtered = gmakeEmails.filter(m => 
-        m.subject.toLowerCase().includes(txt) || 
-        m.from.toLowerCase().includes(txt) || 
-        m.body.toLowerCase().includes(txt)
-      );
-      renderGmakeList(filtered);
-    }
-
-
-    /* =========================================
-       6. ADMIN Y CONTENIDOS (MERCADO / APPS)
-    ========================================= */
-    function triggerSecretAdmin() {
-      if(prompt("Código:") === "makebyr567"){
-        isAdmin = true; document.getElementById('admin-panel').style.display = 'flex'; loadContents();
-      }
-    }
-    function logoutAdmin() { isAdmin = false; document.getElementById('admin-panel').style.display = 'none'; loadContents(); }
-    
-    function openAddContentModal() { document.getElementById('modal-admin-add').style.display = 'flex'; }
-    function closeAddContentModal() { document.getElementById('modal-admin-add').style.display = 'none'; }
-	
-	const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1553827320270299239/P85N2y7rkzkii3XNyVpSZtiB15KBByInfCt1ekH_YEQhVpwnL5eVeh3wRnWIs2gXfBpd";
-
-function saveContent() {
-  const cat = document.getElementById('admin-category').value;
-  const t = document.getElementById('admin-title').value;
-  const d = document.getElementById('admin-desc').value;
-  const l = document.getElementById('admin-link').value;
-
-  if (!t || !d) return alert('Por favor completa el título y la descripción.');
-
-  // 1. Guardar en Firebase
-  db.ref('makebyr_items').push({ 
-    category: cat, 
-    title: t, 
-    desc: d, 
-    link: l || '#', 
-    time: firebase.database.ServerValue.TIMESTAMP 
-  })
-  .then(() => {
-    
-    // 2. Enviar a Discord (sin condiciones raras, directo al webhook)
-    if (DISCORD_WEBHOOK_URL) {
-      fetch(DISCORD_WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          content: "📢 **¡Nuevo anuncio en Makebyr!**",
-          embeds: [{
-            title: t,
-            description: d,
-            color: 3066993, // Azul Makebyr
-            fields: [
-              { name: "Categoría", value: cat.toUpperCase(), inline: true },
-              { name: "Enlace", value: l ? `[Hacer clic aquí](${l})` : "Sin enlace disponible", inline: true }
-            ],
-            footer: { text: "Makebyr Digital Brand" },
-            timestamp: new Date().toISOString()
-          }]
-        })
-      })
-      .then(response => {
-        if (!response.ok) {
-          console.error("Error de Discord:", response.statusText);
-        } else {
-          console.log("¡Mensaje enviado a Discord!");
-        }
-      })
-      .catch(err => console.error("Error de conexión con Discord:", err));
-    }
-
-    // 3. Cerrar modal y avisar al usuario
-    closeAddContentModal();
-    alert('Publicado en la web y anunciado en Discord con éxito');
-  })
-  .catch(error => {
-    console.error("Error al guardar en Firebase:", error);
-    alert("Hubo un error al guardar la publicación.");
+function compose() {
+  document.querySelectorAll('.fol').forEach(e => e.classList.remove('on'));
+  $('act').style.display = 'none';
+  $('mview').innerHTML = `<div style="padding:24px;max-width:760px">
+    <h2 style="margin-bottom:18px;font-size:1.4rem">Mensaje nuevo</h2>
+    <div class="fld"><input id="mt" placeholder="Para (escribe unas letras para autocompletar)" oninput="autoc(this.value)" autocomplete="off"><div id="ac" class="ac"></div></div>
+    <div class="fld"><select id="mk"><option value="inbox">Correo normal</option><option value="promotions">Promoción / anuncio</option><option value="social">Redes sociales</option></select></div>
+    <div class="fld"><input id="msb" placeholder="Asunto"></div>
+    <div class="fld"><textarea id="mb" rows="11" placeholder="Escribe tu mensaje…" style="resize:vertical"></textarea></div>
+    <button class="btn big" onclick="sendMail()">Enviar</button></div>`;
+}
+function autoc(v) {
+  const l = $('ac'); l.innerHTML = ''; if (!v) return;
+  allUsers.filter(e => e.toLowerCase().includes(v.toLowerCase())).forEach(m => {
+    const d = document.createElement('div'); d.textContent = m;
+    d.onclick = () => { $('mt').value = m; l.innerHTML = ''; };
+    l.appendChild(d);
   });
 }
-    
-    function deleteItem(id) { if(confirm('¿Eliminar?')) db.ref('makebyr_items/'+id).remove(); }
+function sendMail() {
+  const to = $('mt').value.trim(), subject = $('msb').value.trim(), body = $('mb').value.trim();
+  if (!to || !subject) return toast('Faltan datos en "Para" o "Asunto".');
+  db.ref('makebyr_emails').push({from: user.email, to, subject, body, folder: $('mk').value, timestamp: firebase.database.ServerValue.TIMESTAMP, read: false, starred: false, trashed: false})
+    .then(() => { toast('Correo enviado.'); loadFolder('inbox'); });
+}
+function loadFolder(f) {
+  if (!user) return;
+  folder = f;
+  document.querySelectorAll('.fol').forEach(e => e.classList.remove('on'));
+  if ($('f-' + f)) $('f-' + f).classList.add('on');
+  $('act').style.display = 'flex';
+  $('mview').innerHTML = '<p class="none" style="padding:20px">Cargando correos…</p>';
+  const ref = f === 'sent' ? db.ref('makebyr_emails').orderByChild('from').equalTo(user.email) : db.ref('makebyr_emails').orderByChild('to').equalTo(user.email);
+  ref.once('value', snap => {
+    mails = []; const unread = {inbox: 0, promotions: 0};
+    snap.forEach(c => {
+      const m = c.val(); m.id = c.key;
+      const mf = m.folder || 'inbox';
+      if (!m.read && !m.trashed && m.to === user.email && mf in unread) unread[mf]++;
+      let ok = false;
+      if (f === 'sent') ok = true;
+      else if (f === 'trash') ok = m.trashed;
+      else if (f === 'starred') ok = m.starred && !m.trashed;
+      else if (!m.trashed) ok = f === mf;
+      if (ok) mails.push(m);
+    });
+    for (const k in unread) { const b = $('b-' + k); b.textContent = unread[k]; b.style.display = unread[k] ? 'inline-block' : 'none'; }
+    drawMails(mails);
+  });
+}
+function drawMails(list) {
+  const v = $('mview'); $('cnt').textContent = list.length + (list.length === 1 ? ' correo' : ' correos');
+  if (!list.length) return v.innerHTML = '<p class="none" style="padding:40px;text-align:center">No hay correos en esta carpeta.</p>';
+  v.innerHTML = [...list].reverse().map(m => {
+    const d = new Date(m.timestamp), hoy = d.toDateString() === new Date().toDateString();
+    const date = hoy ? d.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : d.toLocaleDateString([], {day: 'numeric', month: 'short'});
+    const who = folder === 'sent' ? 'Para: ' + m.to : m.from;
+    return `<div class="er ${m.read ? 'read' : ''}">
+      <input type="checkbox" class="ck" value="${esc(m.id)}" aria-label="Seleccionar">
+      <button class="star ${m.starred ? 'on' : ''}" onclick="star('${esc(m.id)}',${!m.starred})" aria-label="Destacar">★</button>
+      <div class="s" onclick="openMail('${esc(m.id)}')">${esc(who)}</div>
+      <div class="t" onclick="openMail('${esc(m.id)}')"><b>${esc(m.subject)}</b><span>- ${esc((m.body || '').slice(0, 60).replace(/\n/g, ' '))}</span></div>
+      <div class="d" onclick="openMail('${esc(m.id)}')">${date}</div></div>`;
+  }).join('');
+}
+function openMail(id) {
+  const m = mails.find(x => x.id === id); if (!m) return;
+  if (!m.read && folder !== 'sent') { db.ref('makebyr_emails/' + id).update({read: true}); m.read = true; }
+  $('act').style.display = 'none';
+  $('mview').innerHTML = `<div class="rd"><button class="btn ghost" onclick="loadFolder(folder)">← Volver</button>
+    <h2>${esc(m.subject)}</h2>
+    <div class="m"><div><strong>${esc(m.from)}</strong>para ${esc(m.to)}</div><div>${new Date(m.timestamp).toLocaleString()}</div></div>
+    <pre>${esc(m.body)}</pre></div>`;
+}
+function star(id, st) { db.ref('makebyr_emails/' + id).update({starred: st}).then(() => loadFolder(folder)); }
+const selected = () => [...document.querySelectorAll('.ck:checked')].map(c => c.value);
+function selAll() { document.querySelectorAll('.ck').forEach(c => c.checked = $('all').checked); }
+function delSel() {
+  const ids = selected(); if (!ids.length) return toast('Selecciona correos primero.');
+  ids.forEach(id => folder === 'trash' ? db.ref('makebyr_emails/' + id).remove() : db.ref('makebyr_emails/' + id).update({trashed: true}));
+  setTimeout(() => loadFolder(folder), 500);
+}
+function markRead() { selected().forEach(id => db.ref('makebyr_emails/' + id).update({read: true})); setTimeout(() => loadFolder(folder), 500); }
+function filterMail() {
+  const q = $('ms').value.toLowerCase();
+  drawMails(mails.filter(m => (m.subject + m.from + (m.body || '')).toLowerCase().includes(q)));
+}
 
-    function loadContents() {
-      db.ref('makebyr_items').on('value', snap => {
-        const data = snap.val();
-        ['apps','juegos','tools','destacados'].forEach(id => { if(document.getElementById('grid-'+id)) document.getElementById('grid-'+id).innerHTML=''; });
-        if(!data) return;
-        Object.keys(data).forEach(k => {
-          const i = data[k];
-          const html = `
-            <div class="card">
-              <div><span class="card-tag">${i.category}</span><h3>${i.title}</h3><p>${i.desc}</p></div>
-              <div>
-                ${i.link !== '#' ? `<a href="${i.link}" target="_blank" class="btn-primary" style="display:block; text-align:center; text-decoration:none; margin-bottom:8px;">Abrir</a>` : ''}
-                ${isAdmin ? `<button class="btn-danger" style="width:100%;" onclick="deleteItem('${k}')">Eliminar</button>` : ''}
-              </div>
-            </div>`;
-          if(document.getElementById('grid-'+i.category)) document.getElementById('grid-'+i.category).innerHTML += html;
-          document.getElementById('grid-destacados').innerHTML += html;
-		  // 1. Bloquear el clic derecho
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        });
+/* ---------- admin y publicaciones ---------- */
+const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1553827320270299239/P85N2y7rkzkii3XNyVpSZtiB15KBByInfCt1ekH_YEQhVpwnL5eVeh3wRnWIs2gXfBpd";
 
-        // 2. Bloquear F12 y atajos de teclado de la consola
-        document.addEventListener('keydown', function(e) {
-            // Bloquear F12
-            if (e.key === "F12") {
-                e.preventDefault();
-            }
-            // Bloquear Ctrl + Shift + I (Inspeccionar)
-            if (e.ctrlKey && e.shiftKey && e.key === 'I') {
-                e.preventDefault();
-            }
-            // Bloquear Ctrl + Shift + J (Consola)
-            if (e.ctrlKey && e.shiftKey && e.key === 'J') {
-                e.preventDefault();
-            }
-            // Bloquear Ctrl + U (Ver código fuente)
-            if (e.ctrlKey && e.key === 'u') {
-                e.preventDefault();
-            }
-		   });
-        });
-      });
-    }
-  </script>
+function adminLogin() { if (prompt('Código:') === 'makebyr567') { isAdmin = true; $('admin').style.display = 'flex'; render(); } }
+function logoutAdmin() { isAdmin = false; $('admin').style.display = 'none'; render(); }
+
+function savePost() {
+  const cat = $('pc').value, t = $('pt').value.trim(), d = $('pd').value.trim(), l = $('pl').value.trim();
+  if (!t || !d) return toast('Completa el título y la descripción.');
+  db.ref('makebyr_items').push({category: cat, title: t, desc: d, link: l || '#', time: firebase.database.ServerValue.TIMESTAMP}).then(() => {
+    fetch(DISCORD_WEBHOOK_URL, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({
+      content: '📢 **¡Nuevo anuncio en Makebyr!**',
+      embeds: [{title: t, description: d, color: 3066993, fields: [{name: 'Categoría', value: cat.toUpperCase(), inline: true}, {name: 'Enlace', value: l ? `[Hacer clic aquí](${l})` : 'Sin enlace disponible', inline: true}], footer: {text: 'Makebyr Digital Brand'}, timestamp: new Date().toISOString()}]
+    })}).catch(err => console.error('Discord:', err));
+    ['pt', 'pd', 'pl'].forEach(i => $(i).value = '');
+    hide('m-add'); toast('Publicado en la web y anunciado en Discord.');
+  }).catch(() => toast('Hubo un error al guardar la publicación.'));
+}
+function delPost(id) { if (confirm('¿Eliminar esta publicación?')) db.ref('makebyr_items/' + id).remove(); }
+
+let userList = [];
+function openUsers() {
+  if (!isAdmin) return;
+  show('m-users'); $('ulist').innerHTML = '<p class="none">Cargando…</p>';
+  db.ref('makebyr_users').once('value', s => {
+    userList = []; s.forEach(c => userList.push({uid: c.key, email: c.val().email || c.key}));
+    drawUsers();
+  }).catch(() => toast('Error: no se pudieron cargar los usuarios.'));
+}
+function drawUsers() {
+  const q = $('uq').value.toLowerCase();
+  const l = userList.filter(u => u.email.toLowerCase().includes(q));
+  $('ulist').innerHTML = l.length ? l.map(u => `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)">
+    <span style="overflow:hidden;text-overflow:ellipsis">${esc(u.email)}</span>
+    <button class="btn ghost" onclick="resetPass('${esc(u.uid)}')">Cambiar contraseña</button></div>`).join('') : '<p class="none">No hay usuarios.</p>';
+}
+async function resetByName() {
+  const u = $('ru').value.trim().toLowerCase().replace('@makebyr.en', '');
+  if (!u) return toast('Completa el nombre del usuario.');
+  const uid = u.replace(/[.#$/\[\]]/g, '_');
+  const s = await db.ref('makebyr_users/' + uid).once('value');
+  if (!s.exists()) return toast('Error: el usuario ' + u + ' no existe.');
+  resetPass(uid);
+}
+async function resetPass(uid) {
+  if (!isAdmin) return;
+  const np = prompt('Nueva contraseña para ' + uid + ' (mínimo 6 caracteres):');
+  if (np === null) return;
+  if (np.length < 6) return toast('Contraseña: mínimo 6 caracteres.');
+  try {
+    await db.ref('makebyr_users/' + uid).update({passHash: await sha(np), password: null});
+    toast('Contraseña cambiada. Pásasela a ' + uid + '.');
+  } catch (e) { toast('Error: no se pudo cambiar la contraseña.'); }
+}
+
+function card(k, i) {
+  const link = safeUrl(i.link);
+  return `<article class="card"><div><span class="cat ${esc(i.category)}">${CATS[i.category] || esc(i.category)}</span><h3>${esc(i.title)}</h3><p>${esc(i.desc)}</p></div>
+    <div class="foot-c">${link !== '#' ? `<a class="btn" href="${esc(link)}" target="_blank" rel="noopener">Abrir</a>` : ''}${isAdmin ? `<button class="btn red" onclick="delPost('${esc(k)}')">Eliminar</button>` : ''}</div></article>`;
+}
+function render() {
+  const list = Object.entries(items).sort((a, b) => (b[1].time || 0) - (a[1].time || 0));
+  const n = {apps: 0, juegos: 0, tools: 0}, g = {apps: '', juegos: '', tools: '', destacados: ''};
+  list.forEach(([k, i], idx) => { const h = card(k, i); if (i.category in n) { g[i.category] += h; n[i.category]++; } if (idx < 6) g.destacados += h; });
+  for (const k in g) $('g-' + k).innerHTML = g[k] || '<p class="none">Todavía no hay publicaciones aquí.</p>';
+  for (const k in n) $('n-' + k).textContent = n[k];
+  $('total').textContent = n.apps + n.juegos + n.tools;
+  filterPosts();
+}
+function filterPosts() {
+  const q = $('q').value.toLowerCase();
+  document.querySelectorAll('.card').forEach(c => c.style.display = c.textContent.toLowerCase().includes(q) ? '' : 'none');
+}
+
+/* ---------- arranque ---------- */
+try { const s = localStorage.getItem('makebyr_session'); setUser(s ? JSON.parse(s) : null); } catch (e) { localStorage.removeItem('makebyr_session'); setUser(null); }
+db.ref('makebyr_items').on('value', s => { items = s.val() || {}; render(); });
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => { if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && 'IJ'.includes(e.key.toUpperCase())) || (e.ctrlKey && e.key.toLowerCase() === 'u')) e.preventDefault(); });
+</script>
 </body>
 </html>
